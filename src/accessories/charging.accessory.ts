@@ -12,7 +12,7 @@ export class ChargingAccessory extends AbstractAccessory {
     readonly parent = ChargingAccessory;
 
     get displayName(): string {
-        return 'Car charging ' + this.instanceId;
+        return 'Wallbox ' + this.instanceId;
     }
 
     private _lockTargetStateCharging: CharacteristicValue = -1;
