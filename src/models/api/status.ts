@@ -16,7 +16,7 @@ import {UnlockStateEnum} from "./unlock-state.enum";
 import {InterfaceSettingsEnum} from "./interface-settings.enum";
 import {CloudEnabledStatusEnum} from "./cloud-enabled-status.enum";
 import {MqttStateEnum} from "./mqtt-state.enum";
-import {Writable} from "../helpers/conditional-types";
+import {Writable} from "../../helpers/conditional-types";
 
 export interface Status {
 
