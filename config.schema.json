@@ -1,15 +1,22 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "go-e Charger",
   "pluginType": "platform",
   "singular": true,
   "schema": {
     "type": "object",
     "properties": {
-      "name": {
-        "title": "Name",
+      "hostname": {
+        "title": "IP Address / Hostname",
+        "description": "The ip address or hostname of your go-e charger inside your network.",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "format": "hostname"
+      },
+      "enableAdvancedAccessories": {
+        "title": "Advanced accessories",
+        "description": "Do you want all available accessories to be displayed in homekit?",
+        "type": "boolean",
+        "default": false
       }
     }
   }

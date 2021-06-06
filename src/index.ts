@@ -1,11 +1,11 @@
 import { API } from 'homebridge';
 
 import { PLATFORM_NAME } from './settings';
-import { ExampleHomebridgePlatform } from './platform';
+import { GoEChargerPlatform } from './platforms/go-e-charger.platform';
 
 /**
- * This method registers the platform with Homebridge
+ * This method registers the platforms with Homebridge
  */
 export = (api: API) => {
-  api.registerPlatform(PLATFORM_NAME, ExampleHomebridgePlatform);
+  api.registerPlatform(PLATFORM_NAME, GoEChargerPlatform);
 };
