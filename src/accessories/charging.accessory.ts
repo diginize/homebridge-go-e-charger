@@ -24,7 +24,7 @@ export class ChargingAccessory extends AbstractAccessory {
 
     constructor(
         platform: AbstractPlatform,
-        instanceId: string = uuid.v4()
+        instanceId?: string
     ) {
         super(platform, instanceId);
     }
