@@ -97,7 +97,7 @@ export class ChargingAccessory extends AbstractAccessory {
             this.platform.Characteristic.LockTargetState.UNSECURED :
             this.platform.Characteristic.LockTargetState.SECURED;
 
-        this.platform.log.info('Set Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
+        this.platform.log.info('Set Characteristic Lock Target Charging ->', this._lockTargetStateCharging, `(received target state: ${value}`);
     }
 
     async getLockTargetCharging(): Promise<CharacteristicValue> {
@@ -125,7 +125,7 @@ export class ChargingAccessory extends AbstractAccessory {
             this.platform.Characteristic.LockTargetState.SECURED :
             this.platform.Characteristic.LockTargetState.UNSECURED;
 
-        this.platform.log.info('Set Characteristic Lock Target Cable ->', this._lockTargetStateCable);
+        this.platform.log.info('Set Characteristic Lock Target Cable ->', this._lockTargetStateCable, `(received target state: ${value}`);
     }
 
     async getLockTargetCable(): Promise<CharacteristicValue> {
