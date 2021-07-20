@@ -78,7 +78,7 @@ export class GoEChargerLocal {
                         const result = JSON.parse(data);
                         resolve(result);
                     } catch (e) {
-                        this.log?.error(`Error performing request to "${url}":`, data);
+                        this.log?.error(`Error parsing response from request to "${url}":`, data);
 
                         reject(e);
                     }
