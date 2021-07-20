@@ -14,6 +14,7 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
     }
 
     private _lightCurrentBrightness: CharacteristicValue = -1;
+    private _lightLastBrightness: CharacteristicValue = -1;
     private _switchLedSaveEnergyStatus: CharacteristicValue = -1;
 
     readonly UUID_LED_BRIGHTNESS = uuid.v5('led-brightness', this.UUID);
@@ -77,11 +78,17 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
 
     async setLedBrightnessIO(value: CharacteristicValue) {
         if (!value) {
+            await this.setLedBrightness(this._lightCurrentBrightness);
+        } else {
             await this.setLedBrightness(0);
         }
     }
 
     async setLedBrightness(value: CharacteristicValue) {
+        if (value === 0 && this._lightCurrentBrightness > 0) {
+            this._lightLastBrightness = this._lightCurrentBrightness;
+        }
+
         const service = GoEChargerLocal.getService(this.instanceId);
         const state = await service
             .updateValue(
