@@ -4,7 +4,6 @@ import {AbstractPlatform} from "../platforms/abstract.platform";
 import {GoEChargerLocal} from "../services/go-e-charger-local";
 import * as uuid from 'uuid'
 import {CarEnum} from "../models/api/car.enum";
-import {UnlockStateEnum} from "../models/api/unlock-state.enum";
 import {AccessStateEnum} from "../models/api/access-state.enum";
 
 export class ChargingAccessory extends AbstractAccessory {
@@ -16,14 +15,11 @@ export class ChargingAccessory extends AbstractAccessory {
     }
 
     private _lockTargetStateCharging: CharacteristicValue = -1;
-    private _lockTargetStateCable: CharacteristicValue = -1;
 
     private _lockCurrentStateCharging: CharacteristicValue = -1;
-    private _lockCurrentStateCable: CharacteristicValue = -1;
     private _contactIsChargingState: CharacteristicValue = -1;
 
     readonly UUID_LOCK_MECHANISM_CHARGING = uuid.v5('lock-allow-charging', this.UUID);
-    readonly UUID_LOCK_MECHANISM_CABLE = uuid.v5('lock-allow-unplug', this.UUID);
     readonly UUID_CHARGING_CONTACT_SENSOR = uuid.v5('contact-charging', this.UUID);
 
     constructor(
@@ -50,14 +46,6 @@ export class ChargingAccessory extends AbstractAccessory {
             .onSet(this.setLockTargetCharging.bind(this))
             .onGet(this.getLockTargetCharging.bind(this));
 
-        // register lock mechanism (allow cable unplug)
-        const lockCable = accessory.getService('Allow Cable Unplug') ||
-            accessory.addService(this.platform.Service.LockMechanism, 'Allow Cable Unplug', this.UUID_LOCK_MECHANISM_CABLE);
-
-        lockCable.getCharacteristic(this.platform.Characteristic.LockTargetState)
-            .onSet(this.setLockTargetCable.bind(this))
-            .onGet(this.getLockTargetCable.bind(this));
-
         // register contact sensor (car is charging)
         const carCharging = accessory.getService('Car Charging') ||
             accessory.addService(this.platform.Service.ContactSensor, 'Car Charging', this.UUID_CHARGING_CONTACT_SENSOR);
@@ -74,16 +62,6 @@ export class ChargingAccessory extends AbstractAccessory {
                 this._lockCurrentStateCharging = lockStateCharging;
                 lockCharging.updateCharacteristic(this.platform.Characteristic.LockCurrentState, this._lockCurrentStateCharging);
                 this.platform.log.info('Triggering Allow Charging Lock State:', this._lockCurrentStateCharging);
-            }
-
-            // lock (allow cable unplug)
-            const lockStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
-                this.platform.Characteristic.LockCurrentState.SECURED :
-                this.platform.Characteristic.LockCurrentState.UNSECURED;
-            if (this._lockCurrentStateCable !== lockStateCable) {
-                this._lockCurrentStateCable = lockStateCable;
-                lockCable.updateCharacteristic(this.platform.Characteristic.LockCurrentState, this._lockCurrentStateCable);
-                this.platform.log.info('Triggering Allow Cable Unplug Lock State:', this._lockCurrentStateCable);
             }
 
             // contact sensor (car is charging)
@@ -124,34 +102,6 @@ export class ChargingAccessory extends AbstractAccessory {
         this.platform.log.info('Get Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
 
         return this._lockTargetStateCharging;
-    }
-
-    async setLockTargetCable(value: CharacteristicValue) {
-        const service = GoEChargerLocal.getService(this.instanceId);
-        const state = await service
-            .updateValue(
-                service.hostname,
-                'ust',
-                value === this.platform.Characteristic.LockTargetState.UNSECURED ? UnlockStateEnum.lockWhileCarPluggedIn : UnlockStateEnum.alwaysLocked
-            );
-        this._lockTargetStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
-            this.platform.Characteristic.LockTargetState.SECURED :
-            this.platform.Characteristic.LockTargetState.UNSECURED;
-
-        this.platform.log.info('Set Characteristic Lock Target Cable ->', this._lockTargetStateCable, `(received target state: ${value})`);
-    }
-
-    async getLockTargetCable(): Promise<CharacteristicValue> {
-        if (this._lockTargetStateCable === -1) {
-            const state = await GoEChargerLocal.getService(this.instanceId).getStatus();
-            this._lockTargetStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
-                this.platform.Characteristic.LockTargetState.SECURED :
-                this.platform.Characteristic.LockTargetState.UNSECURED;
-        }
-
-        this.platform.log.info('Get Characteristic Lock Target Cable ->', this._lockTargetStateCable);
-
-        return this._lockTargetStateCable;
     }
 
 }
