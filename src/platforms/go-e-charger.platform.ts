@@ -1,10 +1,4 @@
-import {
-    API,
-    Logger,
-    Service,
-    Characteristic, PlatformAccessory
-} from 'homebridge';
-import * as uuid from 'uuid';
+import {API, Logger, PlatformAccessory} from 'homebridge';
 
 import {PLATFORM_NAME, PLUGIN_NAME} from '../settings';
 import {ChargingAccessory} from '../accessories/charging.accessory';
@@ -13,6 +7,7 @@ import {AbstractAccessory} from "../accessories/abstract.accessory";
 import {AbstractPlatform} from "./abstract.platform";
 import {ClassConstructor} from "../helpers/class-constructor";
 import {GoEChargerLocal} from "../services/go-e-charger-local";
+import {AdvancedChargingAccessory} from "../accessories/advanced-charging.accessory";
 
 /**
  * HomebridgePlatform
@@ -72,7 +67,9 @@ export class GoEChargerPlatform extends AbstractPlatform {
         const accessories: ClassConstructor<AbstractAccessory>[] = [
             ChargingAccessory,
         ];
-        const advancedAccessories: ClassConstructor<AbstractAccessory>[] = [];
+        const advancedAccessories: ClassConstructor<AbstractAccessory>[] = [
+            AdvancedChargingAccessory,
+        ];
 
         const discoveredAccessories: ClassConstructor<AbstractAccessory>[] = [
             ...accessories,
