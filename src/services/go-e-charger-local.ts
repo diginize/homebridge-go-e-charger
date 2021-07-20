@@ -27,6 +27,7 @@ export class GoEChargerLocal {
     public log?: Logger;
 
     private _status?: Status;
+    private _currentRequest?: Promise<Status>;
     private _lastUpdate?: number;
 
     private setStatus(status: Status): void {
@@ -35,9 +36,22 @@ export class GoEChargerLocal {
     }
 
     async getStatus(hostname: string = this.hostname, cacheTtlMs: number = 2500): Promise<Status> {
+        // prevent multiple simultaneous api calls
+        if (this._currentRequest) {
+            return await this._currentRequest;
+        }
+
+        // try to use cached result
         if (!this._lastUpdate || this._lastUpdate + cacheTtlMs <= Date.now()) {
-            const status = await this.performRequest(hostname, '/status');
-            this.setStatus(status);
+            this._currentRequest = new Promise<Status>(async (resolve) => {
+                const status = await this.performRequest(hostname, '/status');
+                this.setStatus(status);
+
+                resolve(this._status as Status);
+            });
+
+            await this._currentRequest;
+            this._currentRequest = undefined;
         }
 
         return this._status as Status;
