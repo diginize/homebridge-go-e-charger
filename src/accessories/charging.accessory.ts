@@ -95,7 +95,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? YesNoEnum.no : YesNoEnum.yes
             );
 
-        this.platform.log.debug('Set Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
+        this.platform.log.info('Set Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
     }
 
     async getLockTargetCharging(): Promise<CharacteristicValue> {
@@ -106,7 +106,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.Characteristic.LockTargetState.SECURED;
         }
 
-        this.platform.log.debug('Get Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
+        this.platform.log.info('Get Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
 
         return this._lockTargetStateCharging;
     }
@@ -121,7 +121,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? UnlockStateEnum.lockWhileCarPluggedIn : UnlockStateEnum.alwaysLocked
             );
 
-        this.platform.log.debug('Set Characteristic Lock Target Cable ->', this._lockTargetStateCable);
+        this.platform.log.info('Set Characteristic Lock Target Cable ->', this._lockTargetStateCable);
     }
 
     async getLockTargetCable(): Promise<CharacteristicValue> {
@@ -132,7 +132,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.Characteristic.LockTargetState.UNSECURED;
         }
 
-        this.platform.log.debug('Get Characteristic Lock Target Cable ->', this._lockTargetStateCable);
+        this.platform.log.info('Get Characteristic Lock Target Cable ->', this._lockTargetStateCable);
 
         return this._lockTargetStateCable;
     }
