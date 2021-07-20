@@ -40,7 +40,7 @@ export class ChargingAccessory extends AbstractAccessory {
 
         // register lock mechanism (allow charging)
         const lockCharging = accessory.getService('Allow Charging') ||
-            accessory.addService(this.platform.Service.ContactSensor, 'Allow Charging', this.UUID_LOCK_MECHANISM_CHARGING);
+            accessory.addService(this.platform.Service.LockMechanism, 'Allow Charging', this.UUID_LOCK_MECHANISM_CHARGING);
 
         lockCharging.getCharacteristic(this.platform.Characteristic.LockTargetState)
             .onSet(this.setLockTargetCharging.bind(this))
@@ -48,14 +48,14 @@ export class ChargingAccessory extends AbstractAccessory {
 
         // register lock mechanism (allow cable unplug)
         const lockCable = accessory.getService('Allow Cable Unplug') ||
-            accessory.addService(this.platform.Service.ContactSensor, 'Allow Cable Unplug', this.UUID_LOCK_MECHANISM_CABLE);
+            accessory.addService(this.platform.Service.LockMechanism, 'Allow Cable Unplug', this.UUID_LOCK_MECHANISM_CABLE);
 
         lockCable.getCharacteristic(this.platform.Characteristic.LockTargetState)
             .onSet(this.setLockTargetCable.bind(this))
             .onGet(this.getLockTargetCable.bind(this));
 
         // register contact sensor
-        const contactSensor = accessory.getService('Car Charging') ||
+        const carCharging = accessory.getService('Car Charging') ||
             accessory.addService(this.platform.Service.ContactSensor, 'Car Charging', this.UUID_CONTACT_SENSOR);
 
         // update values asynchronously
@@ -80,7 +80,7 @@ export class ChargingAccessory extends AbstractAccessory {
             const contactState = state.car === CarEnum.vehicleLoads ?
                 this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED :
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
-            contactSensor.updateCharacteristic(this.platform.Characteristic.ContactSensorState, contactState);
+            carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, contactState);
             this.platform.log.debug('Triggering Car Charging Contact Sensor:', contactState);
         }, 5000);
     }
