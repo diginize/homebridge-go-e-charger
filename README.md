@@ -5,7 +5,10 @@
 </p>
 
 # Homebridge go-eCharger
+
 A homebridge integration for the go-eCharger wallbox.
+
+> :warning: This plugin is currently beta. It should work but is only tested in a small variety of different cases. Please feel free to install it, use it and give feedback.
 
 ## Prerequisites
 
