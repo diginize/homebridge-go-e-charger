@@ -6,6 +6,7 @@ import * as uuid from 'uuid'
 import {CarEnum} from "../models/api/car.enum";
 import {YesNoEnum} from "../models/api/yes-no.enum";
 import {UnlockStateEnum} from "../models/api/unlock-state.enum";
+import {AccessStateEnum} from "../models/api/access-state.enum";
 
 export class ChargingAccessory extends AbstractAccessory {
 
@@ -20,11 +21,13 @@ export class ChargingAccessory extends AbstractAccessory {
 
     private _lockCurrentStateCharging: CharacteristicValue = -1;
     private _lockCurrentStateCable: CharacteristicValue = -1;
-    private _lockCurrentContactState: CharacteristicValue = -1;
+    private _contactAllowPwmState: CharacteristicValue = -1;
+    private _contactIsChargingState: CharacteristicValue = -1;
 
     readonly UUID_LOCK_MECHANISM_CHARGING = uuid.v5('lock-allow-charging', this.UUID);
     readonly UUID_LOCK_MECHANISM_CABLE = uuid.v5('lock-allow-unplug', this.UUID);
-    readonly UUID_CONTACT_SENSOR = uuid.v5('contact-charging', this.UUID);
+    readonly UUID_ALLOW_PWM_CONTACT_SENSOR = uuid.v5('allow-pwm-signal', this.UUID);
+    readonly UUID_CHARGING_CONTACT_SENSOR = uuid.v5('contact-charging', this.UUID);
 
     constructor(
         platform: AbstractPlatform,
@@ -58,16 +61,20 @@ export class ChargingAccessory extends AbstractAccessory {
             .onSet(this.setLockTargetCable.bind(this))
             .onGet(this.getLockTargetCable.bind(this));
 
-        // register contact sensor
+        // register contact sensor (allow pwm signal)
+        const allowPwmSignal = accessory.getService('Allow PWM Signal') ||
+            accessory.addService(this.platform.Service.ContactSensor, 'Allow PWM Signal', this.UUID_ALLOW_PWM_CONTACT_SENSOR);
+
+        // register contact sensor (car is charging)
         const carCharging = accessory.getService('Car Charging') ||
-            accessory.addService(this.platform.Service.ContactSensor, 'Car Charging', this.UUID_CONTACT_SENSOR);
+            accessory.addService(this.platform.Service.ContactSensor, 'Car Charging', this.UUID_CHARGING_CONTACT_SENSOR);
 
         // update values asynchronously
         setInterval(async () => {
             const state = await GoEChargerLocal.getService().getStatus();
 
             // lock (allow charging)
-            const lockStateCharging = state.alw == YesNoEnum.yes ?
+            const lockStateCharging = state.alw == AccessStateEnum.open ?
                 this.platform.Characteristic.LockCurrentState.UNSECURED :
                 this.platform.Characteristic.LockCurrentState.SECURED;
             if (this._lockCurrentStateCharging !== lockStateCharging) {
@@ -86,14 +93,25 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.log.info('Triggering Allow Cable Unplug Lock State:', this._lockCurrentStateCable);
             }
 
-            // contact sensor
-            const contactState = state.car == CarEnum.vehicleLoads ?
+            // todo: move to advanced stuff
+            // contact sensor (allow pwm signal)
+            const allowPwmState = state.alw == YesNoEnum.no ?
                 this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED :
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
-            if (this._lockCurrentContactState !== contactState) {
-                this._lockCurrentContactState = contactState;
-                carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, this._lockCurrentContactState);
-                this.platform.log.info('Triggering Car Charging Contact Sensor:', this._lockCurrentContactState);
+            if (this._contactAllowPwmState !== allowPwmState) {
+                this._contactAllowPwmState = allowPwmState;
+                allowPwmSignal.updateCharacteristic(this.platform.Characteristic.ContactSensorState, this._contactAllowPwmState);
+                this.platform.log.info('Triggering Allow PWM Signal Contact Sensor:', this._contactAllowPwmState);
+            }
+
+            // contact sensor (car is charging)
+            const chargingState = state.car == CarEnum.vehicleLoads ?
+                this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED :
+                this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
+            if (this._contactIsChargingState !== chargingState) {
+                this._contactIsChargingState = chargingState;
+                carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, this._contactIsChargingState);
+                this.platform.log.info('Triggering Car Charging Contact Sensor:', this._contactIsChargingState);
             }
         }, 5000);
     }
@@ -103,10 +121,10 @@ export class ChargingAccessory extends AbstractAccessory {
             .getService()
             .updateValue(
                 GoEChargerLocal.getService().hostname,
-                'alw',
-                value === this.platform.Characteristic.LockTargetState.UNSECURED ? YesNoEnum.yes : YesNoEnum.no
+                'ast',
+                value === this.platform.Characteristic.LockTargetState.UNSECURED ? AccessStateEnum.open : AccessStateEnum.rfidOrAppNeeded
             );
-        this._lockTargetStateCharging = state.alw == YesNoEnum.yes ?
+        this._lockTargetStateCharging = state.alw == AccessStateEnum.open ?
             this.platform.Characteristic.LockTargetState.UNSECURED :
             this.platform.Characteristic.LockTargetState.SECURED;
 
@@ -116,7 +134,7 @@ export class ChargingAccessory extends AbstractAccessory {
     async getLockTargetCharging(): Promise<CharacteristicValue> {
         if (this._lockTargetStateCharging === -1) {
             const state = await GoEChargerLocal.getService().getStatus();
-            this._lockTargetStateCharging = state.alw == YesNoEnum.yes ?
+            this._lockTargetStateCharging = state.ast == AccessStateEnum.open ?
                 this.platform.Characteristic.LockTargetState.UNSECURED :
                 this.platform.Characteristic.LockTargetState.SECURED;
         }
