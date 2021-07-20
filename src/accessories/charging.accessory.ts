@@ -74,7 +74,7 @@ export class ChargingAccessory extends AbstractAccessory {
             const state = await GoEChargerLocal.getService().getStatus();
 
             // lock (allow charging)
-            const lockStateCharging = state.alw == AccessStateEnum.open ?
+            const lockStateCharging = state.ast == AccessStateEnum.open ?
                 this.platform.Characteristic.LockCurrentState.UNSECURED :
                 this.platform.Characteristic.LockCurrentState.SECURED;
             if (this._lockCurrentStateCharging !== lockStateCharging) {
