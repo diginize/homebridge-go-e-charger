@@ -34,7 +34,7 @@ export class AdvancedTemperatureAccessory extends AbstractAccessory {
 
         // register temperature sensor
         const temperatureSensor = accessory.getService('Wallbox Temperature') ||
-            accessory.addService(this.platform.Service.ContactSensor, 'Wallbox Temperature', this.UUID_TEMPERATURE);
+            accessory.addService(this.platform.Service.TemperatureSensor, 'Wallbox Temperature', this.UUID_TEMPERATURE);
 
         // update values asynchronously
         setInterval(async () => {
