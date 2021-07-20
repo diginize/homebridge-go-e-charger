@@ -86,14 +86,16 @@ export class ChargingAccessory extends AbstractAccessory {
     }
 
     async setLockTargetCharging(value: CharacteristicValue) {
-        this._lockTargetStateCharging = value;
-        await GoEChargerLocal
+        const state = await GoEChargerLocal
             .getService()
             .updateValue(
                 GoEChargerLocal.getService().hostname,
                 'alw',
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? YesNoEnum.no : YesNoEnum.yes
             );
+        this._lockTargetStateCharging = state.alw == YesNoEnum.yes ?
+            this.platform.Characteristic.LockTargetState.UNSECURED :
+            this.platform.Characteristic.LockTargetState.SECURED;
 
         this.platform.log.info('Set Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
     }
@@ -112,14 +114,16 @@ export class ChargingAccessory extends AbstractAccessory {
     }
 
     async setLockTargetCable(value: CharacteristicValue) {
-        this._lockTargetStateCable = value;
-        await GoEChargerLocal
+        const state = await GoEChargerLocal
             .getService()
             .updateValue(
                 GoEChargerLocal.getService().hostname,
                 'ust',
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? UnlockStateEnum.lockWhileCarPluggedIn : UnlockStateEnum.alwaysLocked
             );
+        this._lockTargetStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
+            this.platform.Characteristic.LockTargetState.SECURED :
+            this.platform.Characteristic.LockTargetState.UNSECURED;
 
         this.platform.log.info('Set Characteristic Lock Target Cable ->', this._lockTargetStateCable);
     }
