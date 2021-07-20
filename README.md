@@ -45,7 +45,7 @@ The following accessories are available in HomeKit, when using this plugin:
 | Car Charging | contact sensor | | Notifies you when a car is plugged in and starts or ends charging. |
 | Allow PWM Signal | contact sensor | X | Alerts you if the charger was unlocked via RFID card, app or because Allow Charging was unlocked |
 | Allow Cable Unplug | lock | X | If unlocked the type 2 cable (on the side of the charger) can only be unplugged when no car is connected. If locked the type 2 cable will be always locked. If you want the plug to be unlocked after charging, this must be set using the go-eCharger app. As soon as changed via HomeKit this setting will be set again as described. |
-| Status LED | light bulb | X | With this accessory you can control the brightness of the LEDs of your wallbox. If only turned on after it was turned off, the last brightness will not be restored. It will be set to 100%. |
+| Status LED | light bulb | X | With this accessory you can control the brightness of the LEDs of your wallbox. |
 | LED Save Energy | switch | X | If enabled, the LEDs will turn off after 10 seconds of standby. |
 | Wallbox Temperature | temperature sensor | X | When charging, the go-eCharger returns the current temperature in degrees celsius. If this setting is not returned by your charger, the accessory will display an error. |
 
