@@ -1,5 +1,11 @@
-# homebridge-go-e-charger
-A homebridge integration for the go-eCharger wallbox
+<p align="center">
+
+<img src="https://github.com/homebridge/branding/raw/master/logos/homebridge-wordmark-logo-vertical.png" width="150">
+
+</p>
+
+# Homebridge go-eCharger
+A homebridge integration for the go-eCharger wallbox.
 
 ## Prerequisites
 
@@ -39,3 +45,9 @@ This project is not commercially developed or maintained.
 Therefore, it might take some time after opening an issue until it is solved.
 But anyway: If you experience any bugs feel free to open an issue or create a pull request.
 Contribution is always welcome.
+
+## Further information
+
+To get further information about the go-eCharger please visit the manufacturer's website [go-e.co](https://go-e.co/).
+
+The API documentation can be found in the following repository [goecharger/go-eCharger-API-v1](https://github.com/goecharger/go-eCharger-API-v1).
