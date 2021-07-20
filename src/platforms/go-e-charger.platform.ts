@@ -30,10 +30,10 @@ export class GoEChargerPlatform extends AbstractPlatform {
     ) {
         super(log, config, api);
 
-        this.log.debug('Finished initializing platforms:', this.config.name);
+        this.log.debug('Finished initializing platform:', this.config.name);
 
         // setup go-e api
-        const apiService = GoEChargerLocal.getService(this.config.hostname);
+        const apiService = GoEChargerLocal.getService(this.config.instanceId);
         apiService.log = log;
         apiService.hostname = config.hostname;
 
@@ -84,7 +84,7 @@ export class GoEChargerPlatform extends AbstractPlatform {
         // loop over the discovered devices and register each one if it has not already been registered
         for (const discoveredAccessory of discoveredAccessories) {
 
-            const accessory: AbstractAccessory = new discoveredAccessory(this, this.config.hostname);
+            const accessory: AbstractAccessory = new discoveredAccessory(this, this.config.instanceId);
 
             const id = accessory.UUID;
 
