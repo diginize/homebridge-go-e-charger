@@ -31,13 +31,13 @@ export class ChargingAccessory extends AbstractAccessory {
 
     constructor(
         platform: AbstractPlatform,
-        instanceId?: string
+        instanceId: string
     ) {
         super(platform, instanceId);
     }
 
     public async setup(accessory: PlatformAccessory): Promise<void> {
-        const status = await GoEChargerLocal.getService().getStatus();
+        const status = await GoEChargerLocal.getService(this.instanceId).getStatus();
 
         // set accessories information
         accessory.getService(this.platform.Service.AccessoryInformation)!
@@ -71,7 +71,7 @@ export class ChargingAccessory extends AbstractAccessory {
 
         // update values asynchronously
         setInterval(async () => {
-            const state = await GoEChargerLocal.getService().getStatus();
+            const state = await GoEChargerLocal.getService(this.instanceId).getStatus();
 
             // lock (allow charging)
             const lockStateCharging = state.ast == AccessStateEnum.open ?
@@ -117,10 +117,10 @@ export class ChargingAccessory extends AbstractAccessory {
     }
 
     async setLockTargetCharging(value: CharacteristicValue) {
-        const state = await GoEChargerLocal
-            .getService()
+        const service = GoEChargerLocal.getService(this.instanceId);
+        const state = await service
             .updateValue(
-                GoEChargerLocal.getService().hostname,
+                service.hostname,
                 'ast',
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? AccessStateEnum.open : AccessStateEnum.rfidOrAppNeeded
             );
@@ -133,7 +133,7 @@ export class ChargingAccessory extends AbstractAccessory {
 
     async getLockTargetCharging(): Promise<CharacteristicValue> {
         if (this._lockTargetStateCharging === -1) {
-            const state = await GoEChargerLocal.getService().getStatus();
+            const state = await GoEChargerLocal.getService(this.instanceId).getStatus();
             this._lockTargetStateCharging = state.ast == AccessStateEnum.open ?
                 this.platform.Characteristic.LockTargetState.UNSECURED :
                 this.platform.Characteristic.LockTargetState.SECURED;
@@ -145,10 +145,10 @@ export class ChargingAccessory extends AbstractAccessory {
     }
 
     async setLockTargetCable(value: CharacteristicValue) {
-        const state = await GoEChargerLocal
-            .getService()
+        const service = GoEChargerLocal.getService(this.instanceId);
+        const state = await service
             .updateValue(
-                GoEChargerLocal.getService().hostname,
+                service.hostname,
                 'ust',
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? UnlockStateEnum.lockWhileCarPluggedIn : UnlockStateEnum.alwaysLocked
             );
@@ -161,7 +161,7 @@ export class ChargingAccessory extends AbstractAccessory {
 
     async getLockTargetCable(): Promise<CharacteristicValue> {
         if (this._lockTargetStateCable === -1) {
-            const state = await GoEChargerLocal.getService().getStatus();
+            const state = await GoEChargerLocal.getService(this.instanceId).getStatus();
             this._lockTargetStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
                 this.platform.Characteristic.LockTargetState.SECURED :
                 this.platform.Characteristic.LockTargetState.UNSECURED;

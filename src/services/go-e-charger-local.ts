@@ -5,14 +5,14 @@ import {Logger} from "homebridge";
 
 export class GoEChargerLocal {
 
-    private static _service?: GoEChargerLocal;
+    private static _services: {[instanceId: string]: GoEChargerLocal} = {};
 
-    public static getService(): GoEChargerLocal {
-        if (!this._service) {
-            this._service = new GoEChargerLocal();
+    public static getService(instanceId: string): GoEChargerLocal {
+        if (!this._services[instanceId]) {
+            this._services[instanceId] = new GoEChargerLocal();
         }
 
-        return this._service;
+        return this._services[instanceId];
     }
 
     readonly protocol = 'http';
