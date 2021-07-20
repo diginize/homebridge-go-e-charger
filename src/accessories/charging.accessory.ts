@@ -134,7 +134,7 @@ export class ChargingAccessory extends AbstractAccessory {
 
         this.platform.log.debug('Get Characteristic Lock Target Cable ->', this._lockTargetStateCable);
 
-        return this._lockTargetStateCharging;
+        return this._lockTargetStateCable;
     }
 
 }
