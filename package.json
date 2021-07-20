@@ -1,5 +1,5 @@
 {
-  "displayName": "Homebridge go-e charger plugin",
+  "displayName": "Homebridge go-eCharger",
   "name": "homebridge-go-e-charger",
   "version": "1.0.0",
   "description": "A homebridge integration for the go-e charger wallbox.",
