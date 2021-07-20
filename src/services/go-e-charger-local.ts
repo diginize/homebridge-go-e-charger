@@ -53,7 +53,7 @@ export class GoEChargerLocal {
 
     protected performRequest<R = Status, I = StatusWritable, K extends keyof I = never>(hostname: string, path?: string, payloadKey?: K, payloadValue?: I[K]): Promise<R> {
         return new Promise<R>((resolve, reject) => {
-            let url = this.getBaseUrl(hostname);
+            let url = this.getBaseUrl(hostname, path);
 
             if (payloadKey !== undefined && payloadValue !== undefined) {
                 url += `?payload=${encodeURIComponent(payloadKey as string)}=${encodeURIComponent(payloadValue as any)}`;
