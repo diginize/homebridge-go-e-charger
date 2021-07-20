@@ -67,21 +67,21 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.Characteristic.LockCurrentState.UNSECURED :
                 this.platform.Characteristic.LockCurrentState.SECURED;
             lockCharging.updateCharacteristic(this.platform.Characteristic.LockCurrentState, lockStateCharging);
-            this.platform.log.debug('Triggering Allow Charging Lock State:', lockStateCharging);
+            this.platform.log.info('Triggering Allow Charging Lock State:', lockStateCharging);
 
             // lock (allow cable unplug)
             const lockStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
                 this.platform.Characteristic.LockCurrentState.SECURED :
                 this.platform.Characteristic.LockCurrentState.UNSECURED;
             lockCable.updateCharacteristic(this.platform.Characteristic.LockCurrentState, lockStateCable);
-            this.platform.log.debug('Triggering Allow Cable Unplug Lock State:', lockStateCable);
+            this.platform.log.info('Triggering Allow Cable Unplug Lock State:', lockStateCable);
 
             // contact sensor
             const contactState = state.car == CarEnum.vehicleLoads ?
                 this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED :
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
             carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, contactState);
-            this.platform.log.debug('Triggering Car Charging Contact Sensor:', contactState);
+            this.platform.log.info('Triggering Car Charging Contact Sensor:', contactState);
         }, 1000);
     }
 
