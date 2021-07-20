@@ -82,14 +82,18 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
             carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, contactState);
             this.platform.log.debug('Triggering Car Charging Contact Sensor:', contactState);
-        }, 5000);
+        }, 1000);
     }
 
     async setLockTargetCharging(value: CharacteristicValue) {
-        const state = await GoEChargerLocal.getService().updateValue(GoEChargerLocal.getService().hostname, 'alw', value === this.platform.Characteristic.LockTargetState.UNSECURED ? YesNoEnum.no : YesNoEnum.yes);
-        this._lockTargetStateCharging = state.alw === YesNoEnum.yes ?
-            this.platform.Characteristic.LockTargetState.UNSECURED :
-            this.platform.Characteristic.LockTargetState.SECURED;
+        this._lockTargetStateCharging = value;
+        await GoEChargerLocal
+            .getService()
+            .updateValue(
+                GoEChargerLocal.getService().hostname,
+                'alw',
+                value === this.platform.Characteristic.LockTargetState.UNSECURED ? YesNoEnum.no : YesNoEnum.yes
+            );
 
         this.platform.log.debug('Set Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
     }
@@ -108,10 +112,14 @@ export class ChargingAccessory extends AbstractAccessory {
     }
 
     async setLockTargetCable(value: CharacteristicValue) {
-        const state = await GoEChargerLocal.getService().updateValue(GoEChargerLocal.getService().hostname, 'ust', value === this.platform.Characteristic.LockTargetState.UNSECURED ? UnlockStateEnum.lockWhileCarPluggedIn : UnlockStateEnum.alwaysLocked);
-        this._lockTargetStateCable = state.ust === UnlockStateEnum.alwaysLocked ?
-            this.platform.Characteristic.LockTargetState.SECURED :
-            this.platform.Characteristic.LockTargetState.UNSECURED;
+        this._lockTargetStateCable = value;
+        await GoEChargerLocal
+            .getService()
+            .updateValue(
+                GoEChargerLocal.getService().hostname,
+                'ust',
+                value === this.platform.Characteristic.LockTargetState.UNSECURED ? UnlockStateEnum.lockWhileCarPluggedIn : UnlockStateEnum.alwaysLocked
+            );
 
         this.platform.log.debug('Set Characteristic Lock Target Cable ->', this._lockTargetStateCable);
     }
