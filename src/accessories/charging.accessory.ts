@@ -124,7 +124,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 'ast',
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? AccessStateEnum.open : AccessStateEnum.rfidOrAppNeeded
             );
-        this._lockTargetStateCharging = state.alw == AccessStateEnum.open ?
+        this._lockTargetStateCharging = state.ast == AccessStateEnum.open ?
             this.platform.Characteristic.LockTargetState.UNSECURED :
             this.platform.Characteristic.LockTargetState.SECURED;
 
