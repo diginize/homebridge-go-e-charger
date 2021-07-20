@@ -57,7 +57,7 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
             const state = await GoEChargerLocal.getService(this.instanceId).getStatus();
 
             // light bulb (led brightness)
-            const ledBrightness = Math.round(100 / 255 * parseInt(`${state.lbr}`));
+            const ledBrightness = Math.round(parseInt(`${state.lbr}`) / 255 * 100);
             if (this._lightCurrentBrightness !== ledBrightness) {
                 this._lightCurrentBrightness = ledBrightness;
                 ledBrightnessLightbulb.updateCharacteristic(this.platform.Characteristic.On, this._lightCurrentBrightness > 0);
@@ -76,7 +76,9 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
     }
 
     async setLedBrightnessIO(value: CharacteristicValue) {
-        return await this.setLedBrightness(value ? 255 : 0);
+        if (!value) {
+            await this.setLedBrightness(0);
+        }
     }
 
     async setLedBrightness(value: CharacteristicValue) {
@@ -85,9 +87,9 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
             .updateValue(
                 service.hostname,
                 'lbr',
-                Math.round((value as number) / 255 * 100)
+                Math.round((value as number) / 100 * 255)
             );
-        this._lightCurrentBrightness = Math.round(100 / 255 * parseInt(`${state.lbr}`));
+        this._lightCurrentBrightness = Math.round(parseInt(`${state.lbr}`) / 255 * 100);
 
         this.platform.log.info('Set Characteristic LED Brightness ->', this._lightCurrentBrightness, `(received target state: ${value})`);
     }
