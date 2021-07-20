@@ -4,6 +4,13 @@
 
 </p>
 
+[![npm](https://badgen.net/npm/v/homebridge-go-e-charger/latest?icon=npm&label)](https://www.npmjs.com/package/homebridge-go-e-charger)
+[![npm](https://badgen.net/npm/dt/homebridge-go-e-charger?label=downloads)](https://www.npmjs.com/package/homebridge-go-e-charger)
+[![release](https://badgen.net/github/release/diginize/homebridge-go-e-charger)](https://github.com/diginize/homebridge-go-e-charger/releases)
+[![license](https://badgen.net/github/license/diginize/homebridge-go-e-charger)](https://github.com/diginize/homebridge-go-e-charger/blob/main/LICENSE)
+[![Node.js Package](https://github.com/diginize/homebridge-go-e-charger/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/diginize/homebridge-go-e-charger/actions/workflows/npm-publish.yml)
+[![Node.js CI](https://github.com/diginize/homebridge-go-e-charger/actions/workflows/npm-test.yml/badge.svg?branch=main)](https://github.com/diginize/homebridge-go-e-charger/actions/workflows/npm-test.yml)
+
 # Homebridge go-eCharger
 
 A homebridge integration for the go-eCharger wallbox.
