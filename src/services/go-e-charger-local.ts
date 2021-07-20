@@ -1,6 +1,7 @@
 import * as http from "http";
 import * as https from "https";
 import {Status, StatusWritable} from "../models/api/status";
+import {Logger} from "homebridge";
 
 export class GoEChargerLocal {
 
@@ -22,6 +23,8 @@ export class GoEChargerLocal {
     }
 
     public hostname: string = '';
+
+    public log?: Logger;
 
     private _status?: Status;
     private _lastUpdate?: number;
@@ -59,6 +62,8 @@ export class GoEChargerLocal {
                 url += `?payload=${encodeURIComponent(payloadKey as string)}=${encodeURIComponent(payloadValue as any)}`;
             }
 
+            this.log?.debug('Performing request to:', url);
+
             this.httpModule.get(url, (response) => {
                 let data = '';
 
@@ -68,14 +73,18 @@ export class GoEChargerLocal {
 
                 response.on('end', () => {
                     try {
+                        this.log?.debug(`Received response for request to "${url}":`, data);
+
                         const result = JSON.parse(data);
                         resolve(result);
                     } catch (e) {
-                        console.error(`[${GoEChargerLocal.name}] Error performing request to "${url}". Received response "${data}"`);
+                        this.log?.error(`Error performing request to "${url}":`, data);
+
                         reject(e);
                     }
                 });
             }).on('error', (error) => {
+                this.log?.error(`Error performing request to "${url}":`, error);
                 reject(error);
             });
         });

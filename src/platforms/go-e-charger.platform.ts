@@ -37,6 +37,7 @@ export class GoEChargerPlatform extends AbstractPlatform {
 
         // setup go-e api
         const apiService = GoEChargerLocal.getService();
+        apiService.log = this.log;
         apiService.hostname = config.hostname;
 
         // When this event is fired it means Homebridge has restored all cached accessories from disk.
