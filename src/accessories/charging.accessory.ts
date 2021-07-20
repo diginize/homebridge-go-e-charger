@@ -30,39 +30,33 @@ export class ChargingAccessory extends AbstractAccessory {
     }
 
     public async setup(accessory: PlatformAccessory): Promise<void> {
-        if (this.accessory) {
-            throw new Error('Accessory already set up');
-        }
-
         const status = await GoEChargerLocal.getService().getStatus();
 
-        this.accessory = accessory;
-
         // set accessories information
-        this.accessory.getService(this.platform.Service.AccessoryInformation)!
+        accessory.getService(this.platform.Service.AccessoryInformation)!
             .setCharacteristic(this.platform.Characteristic.Manufacturer, 'go-e')
             .setCharacteristic(this.platform.Characteristic.Model, 'HOME')
             .setCharacteristic(this.platform.Characteristic.SerialNumber, status.sse);
 
         // register lock mechanism (allow charging)
-        const lockCharging = this.accessory.getService('Allow Charging') ||
-            this.accessory.addService(this.platform.Service.ContactSensor, 'Allow Charging', this.UUID_LOCK_MECHANISM_CHARGING);
+        const lockCharging = accessory.getService('Allow Charging') ||
+            accessory.addService(this.platform.Service.ContactSensor, 'Allow Charging', this.UUID_LOCK_MECHANISM_CHARGING);
 
         lockCharging.getCharacteristic(this.platform.Characteristic.LockTargetState)
             .onSet(this.setLockTargetCharging.bind(this))
             .onGet(this.getLockTargetCharging.bind(this));
 
         // register lock mechanism (allow cable unplug)
-        const lockCable = this.accessory.getService('Allow Cable Unplug') ||
-            this.accessory.addService(this.platform.Service.ContactSensor, 'Allow Cable Unplug', this.UUID_LOCK_MECHANISM_CABLE);
+        const lockCable = accessory.getService('Allow Cable Unplug') ||
+            accessory.addService(this.platform.Service.ContactSensor, 'Allow Cable Unplug', this.UUID_LOCK_MECHANISM_CABLE);
 
         lockCable.getCharacteristic(this.platform.Characteristic.LockTargetState)
             .onSet(this.setLockTargetCable.bind(this))
             .onGet(this.getLockTargetCable.bind(this));
 
         // register contact sensor
-        const contactSensor = this.accessory.getService('Car Charging') ||
-            this.accessory.addService(this.platform.Service.ContactSensor, 'Car Charging', this.UUID_CONTACT_SENSOR);
+        const contactSensor = accessory.getService('Car Charging') ||
+            accessory.addService(this.platform.Service.ContactSensor, 'Car Charging', this.UUID_CONTACT_SENSOR);
 
         // update values asynchronously
         setInterval(async () => {

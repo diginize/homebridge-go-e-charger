@@ -11,8 +11,6 @@ export abstract class AbstractAccessory {
         return this.getAccessoryUuid(this.platform, this.instanceId);
     }
 
-    public accessory?: PlatformAccessory;
-
     public abstract get displayName(): string;
 
     protected constructor(
