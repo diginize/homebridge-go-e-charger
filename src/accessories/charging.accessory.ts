@@ -63,21 +63,21 @@ export class ChargingAccessory extends AbstractAccessory {
             const state = await GoEChargerLocal.getService().getStatus();
 
             // lock (allow charging)
-            const lockStateCharging = state.alw === YesNoEnum.yes ?
+            const lockStateCharging = state.alw == YesNoEnum.yes ?
                 this.platform.Characteristic.LockCurrentState.UNSECURED :
                 this.platform.Characteristic.LockCurrentState.SECURED;
             lockCharging.updateCharacteristic(this.platform.Characteristic.LockCurrentState, lockStateCharging);
             this.platform.log.debug('Triggering Allow Charging Lock State:', lockStateCharging);
 
             // lock (allow cable unplug)
-            const lockStateCable = state.ust === UnlockStateEnum.alwaysLocked ?
+            const lockStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
                 this.platform.Characteristic.LockCurrentState.SECURED :
                 this.platform.Characteristic.LockCurrentState.UNSECURED;
             lockCable.updateCharacteristic(this.platform.Characteristic.LockCurrentState, lockStateCable);
             this.platform.log.debug('Triggering Allow Cable Unplug Lock State:', lockStateCable);
 
             // contact sensor
-            const contactState = state.car === CarEnum.vehicleLoads ?
+            const contactState = state.car == CarEnum.vehicleLoads ?
                 this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED :
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
             carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, contactState);
@@ -101,7 +101,7 @@ export class ChargingAccessory extends AbstractAccessory {
     async getLockTargetCharging(): Promise<CharacteristicValue> {
         if (this._lockTargetStateCharging === -1) {
             const state = await GoEChargerLocal.getService().getStatus();
-            this._lockTargetStateCharging = state.alw === YesNoEnum.yes ?
+            this._lockTargetStateCharging = state.alw == YesNoEnum.yes ?
                 this.platform.Characteristic.LockTargetState.UNSECURED :
                 this.platform.Characteristic.LockTargetState.SECURED;
         }
@@ -127,7 +127,7 @@ export class ChargingAccessory extends AbstractAccessory {
     async getLockTargetCable(): Promise<CharacteristicValue> {
         if (this._lockTargetStateCable === -1) {
             const state = await GoEChargerLocal.getService().getStatus();
-            this._lockTargetStateCable = state.ust === UnlockStateEnum.alwaysLocked ?
+            this._lockTargetStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
                 this.platform.Characteristic.LockTargetState.SECURED :
                 this.platform.Characteristic.LockTargetState.UNSECURED;
         }
