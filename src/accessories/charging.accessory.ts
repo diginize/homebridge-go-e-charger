@@ -104,7 +104,7 @@ export class ChargingAccessory extends AbstractAccessory {
             .updateValue(
                 GoEChargerLocal.getService().hostname,
                 'alw',
-                value === this.platform.Characteristic.LockTargetState.UNSECURED ? YesNoEnum.no : YesNoEnum.yes
+                value === this.platform.Characteristic.LockTargetState.UNSECURED ? YesNoEnum.yes : YesNoEnum.no
             );
         this._lockTargetStateCharging = state.alw == YesNoEnum.yes ?
             this.platform.Characteristic.LockTargetState.UNSECURED :
