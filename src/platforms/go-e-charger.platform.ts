@@ -33,7 +33,7 @@ export class GoEChargerPlatform extends AbstractPlatform {
     ) {
         super(log, config, api);
 
-        this.log.debug('Finished initializing platforms:', this.config.name);
+        this.log.debug('Finished initializing platforms: ' + this.config.name);
 
         // setup go-e api
         const apiService = GoEChargerLocal.getService();
@@ -55,7 +55,7 @@ export class GoEChargerPlatform extends AbstractPlatform {
      * It should be used to setup event handlers for characteristics and update respective values.
      */
     configureAccessory(accessory: PlatformAccessory) {
-        this.log.info('Loading accessories from cache:', accessory.displayName);
+        this.log.info('Loading accessories from cache: ' + accessory.displayName);
 
         // add the restored accessories to the accessories cache so we can track if it has already been registered
         this.accessories.push(accessory);
@@ -92,13 +92,13 @@ export class GoEChargerPlatform extends AbstractPlatform {
 
             if (existingAccessory) {
                 // the accessories already exists
-                this.log.info('Restoring existing accessories from cache:', existingAccessory.displayName);
+                this.log.info('Restoring existing accessories from cache: ' + existingAccessory.displayName);
 
                 // create the accessories handler for the restored accessories
                 accessory.setup(existingAccessory).then();
             } else {
                 // the accessories does not yet exist, so we need to create it
-                this.log.info('Adding new accessories:', accessory.displayName);
+                this.log.info('Adding new accessories: ' + accessory.displayName);
 
                 // create a new accessories
                 const platformAccessory = new this.api.platformAccessory(accessory.displayName, id);

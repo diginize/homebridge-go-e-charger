@@ -73,21 +73,21 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.Characteristic.LockCurrentState.UNSECURED :
                 this.platform.Characteristic.LockCurrentState.SECURED;
             lockCharging.updateCharacteristic(this.platform.Characteristic.LockCurrentState, lockStateCharging);
-            this.platform.log.debug('Triggering Allow Charging Lock State:', lockStateCharging);
+            this.platform.log.debug('Triggering Allow Charging Lock State: ' +  lockStateCharging);
 
             // lock (allow cable unplug)
             const lockStateCable = state.ust === UnlockStateEnum.alwaysLocked ?
                 this.platform.Characteristic.LockCurrentState.SECURED :
                 this.platform.Characteristic.LockCurrentState.UNSECURED;
             lockCable.updateCharacteristic(this.platform.Characteristic.LockCurrentState, lockStateCable);
-            this.platform.log.debug('Triggering Allow Cable Unplug Lock State:', lockStateCable);
+            this.platform.log.debug('Triggering Allow Cable Unplug Lock State: ' + lockStateCable);
 
             // contact sensor
             const contactState = state.car === CarEnum.vehicleLoads ?
                 this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED :
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
             contactSensor.updateCharacteristic(this.platform.Characteristic.ContactSensorState, contactState);
-            this.platform.log.debug('Triggering Car Charging Contact Sensor:', contactState);
+            this.platform.log.debug('Triggering Car Charging Contact Sensor: ' + contactState);
         }, 1000);
     }
 
@@ -97,7 +97,7 @@ export class ChargingAccessory extends AbstractAccessory {
             this.platform.Characteristic.LockTargetState.UNSECURED :
             this.platform.Characteristic.LockTargetState.SECURED;
 
-        this.platform.log.debug('Set Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
+        this.platform.log.debug('Set Characteristic Lock Target Charging -> ' + this._lockTargetStateCharging);
     }
 
     async getLockTargetCharging(): Promise<CharacteristicValue> {
@@ -108,7 +108,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.Characteristic.LockTargetState.SECURED;
         }
 
-        this.platform.log.debug('Get Characteristic Lock Target Charging ->', this._lockTargetStateCharging);
+        this.platform.log.debug('Get Characteristic Lock Target Charging -> ' + this._lockTargetStateCharging);
 
         return this._lockTargetStateCharging;
     }
@@ -119,7 +119,7 @@ export class ChargingAccessory extends AbstractAccessory {
             this.platform.Characteristic.LockTargetState.SECURED :
             this.platform.Characteristic.LockTargetState.UNSECURED;
 
-        this.platform.log.debug('Set Characteristic Lock Target Cable ->', this._lockTargetStateCable);
+        this.platform.log.debug('Set Characteristic Lock Target Cable -> ' + this._lockTargetStateCable);
     }
 
     async getLockTargetCable(): Promise<CharacteristicValue> {
@@ -130,7 +130,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.Characteristic.LockTargetState.UNSECURED;
         }
 
-        this.platform.log.debug('Get Characteristic Lock Target Cable ->', this._lockTargetStateCable);
+        this.platform.log.debug('Get Characteristic Lock Target Cable -> ' + this._lockTargetStateCable);
 
         return this._lockTargetStateCharging;
     }
