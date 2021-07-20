@@ -82,7 +82,7 @@ export class GoEChargerPlatform extends AbstractPlatform {
         // loop over the discovered devices and register each one if it has not already been registered
         for (const discoveredAccessory of discoveredAccessories) {
 
-            const accessory: AbstractAccessory = new discoveredAccessory(this);
+            const accessory: AbstractAccessory = new discoveredAccessory(this, this.config.hostname);
 
             const id = accessory.UUID;
 

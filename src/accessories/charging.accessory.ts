@@ -38,8 +38,6 @@ export class ChargingAccessory extends AbstractAccessory {
             .setCharacteristic(this.platform.Characteristic.Model, 'HOME')
             .setCharacteristic(this.platform.Characteristic.SerialNumber, status.sse);
 
-        this.instanceId = status.sse;
-
         // register lock mechanism (allow charging)
         const lockCharging = accessory.getService('Allow Charging') ||
             accessory.addService(this.platform.Service.LockMechanism, 'Allow Charging', this.UUID_LOCK_MECHANISM_CHARGING);

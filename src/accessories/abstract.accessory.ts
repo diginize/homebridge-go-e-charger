@@ -15,12 +15,8 @@ export abstract class AbstractAccessory {
 
     protected constructor(
         public readonly platform: AbstractPlatform,
-        public instanceId?: string
-    ) {
-        if (!this.instanceId) {
-            this.instanceId = this.UUID;
-        }
-    }
+        public readonly instanceId?: string
+    ) { }
 
     public abstract setup(accessory: PlatformAccessory): Promise<void>;
 
