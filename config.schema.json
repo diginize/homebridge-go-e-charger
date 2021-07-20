@@ -1,0 +1,30 @@
+{
+  "pluginAlias": "go-e Charger",
+  "pluginType": "platform",
+  "singular": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "instanceId": {
+        "title": "Wallbox ID",
+        "description": "Some identifier for the charger (can also be a manually give name).",
+        "placeholder": "Michaels go-eCharger",
+        "type": "string",
+        "required": true
+      },
+      "hostname": {
+        "title": "IP Address / Hostname",
+        "description": "The ip address or hostname of your go-e charger inside your network.",
+        "type": "string",
+        "required": true,
+        "format": "hostname"
+      },
+      "enableAdvancedAccessories": {
+        "title": "Advanced accessories",
+        "description": "Do you want all available accessories to be displayed in homekit?",
+        "type": "boolean",
+        "default": false
+      }
+    }
+  }
+}
