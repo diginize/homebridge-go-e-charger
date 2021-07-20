@@ -82,7 +82,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
             contactSensor.updateCharacteristic(this.platform.Characteristic.ContactSensorState, contactState);
             this.platform.log.debug('Triggering Car Charging Contact Sensor:', contactState);
-        }, 1000);
+        }, 5000);
     }
 
     async setLockTargetCharging(value: CharacteristicValue) {
