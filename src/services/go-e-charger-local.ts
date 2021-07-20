@@ -41,7 +41,7 @@ export class GoEChargerLocal {
     }
 
     async updateValue<T extends StatusWritable, K extends keyof T>(hostname: string = this.hostname, payloadKey?: K, payloadValue?: T[K]): Promise<Status> {
-        const status = await this.performRequest(hostname, '/mqtt');
+        const status = await this.performRequest(hostname, '/mqtt', payloadKey, payloadValue);
         this.setStatus(status);
 
         return status;
