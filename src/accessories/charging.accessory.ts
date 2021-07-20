@@ -18,6 +18,10 @@ export class ChargingAccessory extends AbstractAccessory {
     private _lockTargetStateCharging: CharacteristicValue = -1;
     private _lockTargetStateCable: CharacteristicValue = -1;
 
+    private _lockCurrentStateCharging: CharacteristicValue = -1;
+    private _lockCurrentStateCable: CharacteristicValue = -1;
+    private _lockCurrentContactState: CharacteristicValue = -1;
+
     readonly UUID_LOCK_MECHANISM_CHARGING = uuid.v5('lock-allow-charging', this.UUID);
     readonly UUID_LOCK_MECHANISM_CABLE = uuid.v5('lock-allow-unplug', this.UUID);
     readonly UUID_CONTACT_SENSOR = uuid.v5('contact-charging', this.UUID);
@@ -66,22 +70,31 @@ export class ChargingAccessory extends AbstractAccessory {
             const lockStateCharging = state.alw == YesNoEnum.yes ?
                 this.platform.Characteristic.LockCurrentState.UNSECURED :
                 this.platform.Characteristic.LockCurrentState.SECURED;
-            lockCharging.updateCharacteristic(this.platform.Characteristic.LockCurrentState, lockStateCharging);
-            this.platform.log.info('Triggering Allow Charging Lock State:', lockStateCharging);
+            if (this._lockCurrentStateCharging !== lockStateCharging) {
+                this._lockCurrentStateCharging = lockStateCharging;
+                lockCharging.updateCharacteristic(this.platform.Characteristic.LockCurrentState, this._lockCurrentStateCharging);
+                this.platform.log.info('Triggering Allow Charging Lock State:', this._lockCurrentStateCharging);
+            }
 
             // lock (allow cable unplug)
             const lockStateCable = state.ust == UnlockStateEnum.alwaysLocked ?
                 this.platform.Characteristic.LockCurrentState.SECURED :
                 this.platform.Characteristic.LockCurrentState.UNSECURED;
-            lockCable.updateCharacteristic(this.platform.Characteristic.LockCurrentState, lockStateCable);
-            this.platform.log.info('Triggering Allow Cable Unplug Lock State:', lockStateCable);
+            if (this._lockCurrentStateCable !== lockStateCable) {
+                this._lockCurrentStateCable = lockStateCable;
+                lockCable.updateCharacteristic(this.platform.Characteristic.LockCurrentState, this._lockCurrentStateCable);
+                this.platform.log.info('Triggering Allow Cable Unplug Lock State:', this._lockCurrentStateCable);
+            }
 
             // contact sensor
             const contactState = state.car == CarEnum.vehicleLoads ?
                 this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED :
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
-            carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, contactState);
-            this.platform.log.info('Triggering Car Charging Contact Sensor:', contactState);
+            if (this._lockCurrentContactState !== contactState) {
+                this._lockCurrentContactState = contactState;
+                carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, this._lockCurrentContactState);
+                this.platform.log.info('Triggering Car Charging Contact Sensor:', this._lockCurrentContactState);
+            }
         }, 5000);
     }
 
