@@ -14,6 +14,7 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
     }
 
     private _lightCurrentBrightness: CharacteristicValue = -1;
+    private _lightCurrentBrightnessIO: CharacteristicValue = -1;
     private _lightLastBrightness: CharacteristicValue = -1;
     private _switchLedSaveEnergyStatus: CharacteristicValue = -1;
 
@@ -61,6 +62,7 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
             const ledBrightness = Math.round(parseInt(`${state.lbr}`) / 255 * 100);
             if (this._lightCurrentBrightness !== ledBrightness) {
                 this._lightCurrentBrightness = ledBrightness;
+                this._lightCurrentBrightnessIO = this._lightCurrentBrightness > 0;
                 ledBrightnessLightbulb.updateCharacteristic(this.platform.Characteristic.On, this._lightCurrentBrightness > 0);
                 ledBrightnessLightbulb.updateCharacteristic(this.platform.Characteristic.Brightness, this._lightCurrentBrightness);
                 this.platform.log.info('Triggering LED Brightness State:', this._lightCurrentBrightness);
@@ -78,10 +80,12 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
 
     async setLedBrightnessIO(value: CharacteristicValue) {
         if (!value) {
-            await this.setLedBrightness(this._lightCurrentBrightness);
-        } else {
             await this.setLedBrightness(0);
+        } else if (!this._lightCurrentBrightnessIO) {
+            await this.setLedBrightness(this._lightLastBrightness);
         }
+
+        this._lightCurrentBrightnessIO = value > 0;
     }
 
     async setLedBrightness(value: CharacteristicValue) {
