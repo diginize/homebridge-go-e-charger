@@ -3,7 +3,7 @@
   "name": "homebridge-go-e-charger",
   "version": "0.1.0",
   "description": "A homebridge integration for the go-e charger wallbox.",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-or-later",
   "repository": {
     "type": "git",
     "url": "git://github.com/Diginize/homebridge-go-e-charger.git"
@@ -17,7 +17,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "lint": "eslint src/**.ts --max-warnings=1",
+    "lint": "eslint src/**.ts --max-warnings=0",
     "watch": "npm run build && npm link && nodemon",
     "build": "rimraf ./dist && tsc",
     "prepublishOnly": "npm run lint && npm run build"
