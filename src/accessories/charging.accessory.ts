@@ -95,7 +95,7 @@ export class ChargingAccessory extends AbstractAccessory {
 
             // todo: move to advanced stuff
             // contact sensor (allow pwm signal)
-            const allowPwmState = state.alw == YesNoEnum.no ?
+            const allowPwmState = state.alw == YesNoEnum.yes ?
                 this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED :
                 this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED;
             if (this._contactAllowPwmState !== allowPwmState) {
