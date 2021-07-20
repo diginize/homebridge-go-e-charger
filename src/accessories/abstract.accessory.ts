@@ -1,6 +1,5 @@
 import {AbstractPlatform} from "../platforms/abstract.platform";
 import * as uuid from 'uuid';
-import {ClassConstructor} from "../helpers/class-constructor";
 import {PlatformAccessory} from "homebridge";
 
 export abstract class AbstractAccessory {

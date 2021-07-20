@@ -6,17 +6,16 @@ import {
     PlatformAccessory,
     Service
 } from 'homebridge';
-import {ClassConstructor} from "../helpers/class-constructor";
 import * as uuid from "uuid";
 import {PlatformConfig} from "../models/platform-config";
 
 export abstract class AbstractPlatform implements DynamicPlatformPlugin {
 
     public readonly platformUuidNs = '5e5e897a-659f-4b2d-aca7-9fea360ebb38';
-    abstract get parent(): ClassConstructor<AbstractPlatform>;
+    abstract get parentName(): string;
 
     public getPlatformUuid<T extends AbstractPlatform>(): string {
-        return uuid.v5(this.parent.name, this.platformUuidNs);
+        return uuid.v5(this.parentName, this.platformUuidNs);
     }
 
     public readonly Service: typeof Service = this.api.hap.Service;

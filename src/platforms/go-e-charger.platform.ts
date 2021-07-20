@@ -21,7 +21,7 @@ import {GoEChargerLocal} from "../services/go-e-charger-local";
  */
 export class GoEChargerPlatform extends AbstractPlatform {
 
-    public readonly parent = GoEChargerPlatform;
+    public readonly parentName = GoEChargerPlatform.name;
 
     // this is used to track restored cached accessories
     public readonly accessories: PlatformAccessory[] = [];
