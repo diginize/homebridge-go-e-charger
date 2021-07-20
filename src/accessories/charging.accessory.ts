@@ -24,7 +24,7 @@ export class ChargingAccessory extends AbstractAccessory {
 
     constructor(
         platform: AbstractPlatform,
-        instanceId?: string
+        instanceId: string = uuid.v4()
     ) {
         super(platform, instanceId);
     }
@@ -37,6 +37,8 @@ export class ChargingAccessory extends AbstractAccessory {
             .setCharacteristic(this.platform.Characteristic.Manufacturer, 'go-e')
             .setCharacteristic(this.platform.Characteristic.Model, 'HOME')
             .setCharacteristic(this.platform.Characteristic.SerialNumber, status.sse);
+
+        this.instanceId = status.sse;
 
         // register lock mechanism (allow charging)
         const lockCharging = accessory.getService('Allow Charging') ||
