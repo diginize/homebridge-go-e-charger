@@ -1,10 +1,10 @@
 import {CharacteristicValue, PlatformAccessory} from 'homebridge';
 import {AbstractAccessory} from "./abstract.accessory";
-import {AbstractPlatform} from "../platforms/abstract.platform";
 import {GoEChargerLocal} from "../services/go-e-charger-local";
 import * as uuid from 'uuid'
 import {CarEnum} from "../models/api/car.enum";
 import {AccessStateEnum} from "../models/api/access-state.enum";
+import {AbstractPlatform} from "../platforms/abstract.platform";
 
 export class ChargingAccessory extends AbstractAccessory {
 
@@ -73,7 +73,7 @@ export class ChargingAccessory extends AbstractAccessory {
                 carCharging.updateCharacteristic(this.platform.Characteristic.ContactSensorState, this._contactIsChargingState);
                 this.platform.log.info('Triggering Car Charging Contact Sensor:', this._contactIsChargingState);
             }
-        }, 5000);
+        }, 1000);
     }
 
     async setLockTargetCharging(value: CharacteristicValue) {

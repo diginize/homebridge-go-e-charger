@@ -1,10 +1,10 @@
 import {CharacteristicValue, PlatformAccessory} from 'homebridge';
 import {AbstractAccessory} from "./abstract.accessory";
-import {AbstractPlatform} from "../platforms/abstract.platform";
 import {GoEChargerLocal} from "../services/go-e-charger-local";
 import * as uuid from 'uuid'
 import {YesNoEnum} from "../models/api/yes-no.enum";
 import {UnlockStateEnum} from "../models/api/unlock-state.enum";
+import {AbstractPlatform} from "../platforms/abstract.platform";
 
 export class AdvancedChargingAccessory extends AbstractAccessory {
 
@@ -73,7 +73,7 @@ export class AdvancedChargingAccessory extends AbstractAccessory {
                 allowPwmSignal.updateCharacteristic(this.platform.Characteristic.ContactSensorState, this._contactAllowPwmState);
                 this.platform.log.info('Triggering Allow PWM Signal Contact Sensor:', this._contactAllowPwmState);
             }
-        }, 5000);
+        }, 1000);
     }
 
     async setLockTargetCable(value: CharacteristicValue) {

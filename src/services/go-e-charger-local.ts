@@ -34,7 +34,7 @@ export class GoEChargerLocal {
         this._lastUpdate = Date.now();
     }
 
-    async getStatus(hostname: string = this.hostname, cacheTtlMs: number = 1000): Promise<Status> {
+    async getStatus(hostname: string = this.hostname, cacheTtlMs: number = 2500): Promise<Status> {
         if (!this._lastUpdate || this._lastUpdate + cacheTtlMs <= Date.now()) {
             const status = await this.performRequest(hostname, '/status');
             this.setStatus(status);

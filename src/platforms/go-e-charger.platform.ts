@@ -8,6 +8,8 @@ import {AbstractPlatform} from "./abstract.platform";
 import {ClassConstructor} from "../helpers/class-constructor";
 import {GoEChargerLocal} from "../services/go-e-charger-local";
 import {AdvancedChargingAccessory} from "../accessories/advanced-charging.accessory";
+import {AdvancedLightingAccessory} from "../accessories/advanced-lighting.accessory";
+import {AdvancedTemperatureAccessory} from "../accessories/advanced-temperature.accessory";
 
 /**
  * HomebridgePlatform
@@ -69,6 +71,8 @@ export class GoEChargerPlatform extends AbstractPlatform {
         ];
         const advancedAccessories: ClassConstructor<AbstractAccessory>[] = [
             AdvancedChargingAccessory,
+            AdvancedLightingAccessory,
+            AdvancedTemperatureAccessory,
         ];
 
         const discoveredAccessories: ClassConstructor<AbstractAccessory>[] = [

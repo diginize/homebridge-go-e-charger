@@ -560,4 +560,9 @@ export interface Status {
 
 }
 
-export type StatusWritable = Writable<Status>;
+export type StatusWritable = Writable<Status> & {
+    /**
+     * Setter for lse
+     */
+    r2x: LedSaveEnergyEnum | number;
+};
