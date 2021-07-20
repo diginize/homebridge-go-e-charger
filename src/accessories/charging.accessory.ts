@@ -9,7 +9,7 @@ import {UnlockStateEnum} from "../models/api/unlock-state.enum";
 
 export class ChargingAccessory extends AbstractAccessory {
 
-    readonly parent = ChargingAccessory;
+    readonly parentName = ChargingAccessory.name;
 
     get displayName(): string {
         return 'Wallbox ' + this.instanceId;

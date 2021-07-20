@@ -5,7 +5,7 @@ import {PlatformAccessory} from "homebridge";
 
 export abstract class AbstractAccessory {
 
-    public abstract get parent(): ClassConstructor<AbstractAccessory>;
+    public abstract get parentName(): string;
 
     public get UUID(): string {
         return this.getAccessoryUuid(this.platform, this.instanceId);
@@ -21,7 +21,7 @@ export abstract class AbstractAccessory {
     public abstract setup(accessory: PlatformAccessory): Promise<void>;
 
     public getAccessoryUuid<T extends AbstractPlatform>(platform: T, instanceId?: string): string {
-        let id = uuid.v5(this.parent.name, platform.getPlatformUuid());
+        let id = uuid.v5(this.parentName, platform.getPlatformUuid());
 
         if (instanceId) {
             id = uuid.v5(instanceId, id);
