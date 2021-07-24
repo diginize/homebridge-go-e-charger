@@ -18,7 +18,7 @@ import {CloudEnabledStatusEnum} from "./cloud-enabled-status.enum";
 import {MqttStateEnum} from "./mqtt-state.enum";
 import {Writable} from "../../helpers/conditional-types";
 
-export interface Status {
+export interface StatusV1 {
 
     readonly version: VersionEnum | number;
 
@@ -560,7 +560,7 @@ export interface Status {
 
 }
 
-export type StatusWritable = Writable<Status> & {
+export type StatusWritable = Writable<StatusV1> & {
     /**
      * Setter for lse
      */

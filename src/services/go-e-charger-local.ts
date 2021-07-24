@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as https from "https";
-import {Status, StatusWritable} from "../models/api/status";
+import {StatusV1, StatusWritable} from "../models/api/status-v1";
 import {Logger} from "homebridge";
 
 export class GoEChargerLocal {
@@ -26,16 +26,16 @@ export class GoEChargerLocal {
 
     public log?: Logger;
 
-    private _status?: Status;
-    private _currentRequest?: Promise<Status>;
+    private _status?: StatusV1;
+    private _currentRequest?: Promise<StatusV1>;
     private _lastUpdate?: number;
 
-    private setStatus(status: Status): void {
+    private setStatus(status: StatusV1): void {
         this._status = status;
         this._lastUpdate = Date.now();
     }
 
-    async getStatus(hostname: string = this.hostname, cacheTtlMs: number = 2500): Promise<Status> {
+    async getStatus(cacheTtlMs: number = 2500, hostname: string = this.hostname): Promise<StatusV1> {
         // prevent multiple simultaneous api calls
         if (this._currentRequest) {
             return await this._currentRequest;
@@ -43,22 +43,22 @@ export class GoEChargerLocal {
 
         // try to use cached result
         if (!this._lastUpdate || this._lastUpdate + cacheTtlMs <= Date.now()) {
-            this._currentRequest = new Promise<Status>(async (resolve) => {
+            this._currentRequest = new Promise<StatusV1>(async (resolve) => {
                 const status = await this.performRequest(hostname, '/status');
                 this.setStatus(status);
 
-                resolve(this._status as Status);
+                resolve(this._status as StatusV1);
             });
 
             await this._currentRequest;
             this._currentRequest = undefined;
         }
 
-        return this._status as Status;
+        return this._status as StatusV1;
     }
 
-    async updateValue<T extends StatusWritable, K extends keyof T>(hostname: string = this.hostname, payloadKey?: K, payloadValue?: T[K]): Promise<Status> {
-        const status = await this.performRequest(hostname, '/mqtt', payloadKey, payloadValue);
+    async updateValue<T extends StatusWritable, K extends keyof T>(payloadKey?: K, payloadValue?: T[K], hostname: string = this.hostname): Promise<StatusV1> {
+        const status = await this.performRequest(hostname, '/mqtt?payload=' + this.transformGetParameter(payloadKey as any, payloadValue as any));
         this.setStatus(status);
 
         return status;
@@ -68,13 +68,13 @@ export class GoEChargerLocal {
         return `${this.protocol}://${hostname}${this.basePath}${path || ''}`;
     }
 
-    protected performRequest<R = Status, I = StatusWritable, K extends keyof I = never>(hostname: string, path?: string, payloadKey?: K, payloadValue?: I[K]): Promise<R> {
+    protected transformGetParameter(key: string, value: string): string {
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+    }
+
+    protected performRequest<R = StatusV1, I = StatusWritable, K extends keyof I = never>(hostname: string, path?: string, parseResponse: boolean = true): Promise<R> {
         return new Promise<R>((resolve, reject) => {
             let url = this.getBaseUrl(hostname, path);
-
-            if (payloadKey !== undefined && payloadValue !== undefined) {
-                url += `?payload=${encodeURIComponent(payloadKey as string)}=${encodeURIComponent(payloadValue as any)}`;
-            }
 
             this.log?.debug('Performing request to:', url);
 
@@ -89,7 +89,13 @@ export class GoEChargerLocal {
                     try {
                         this.log?.debug(`Received response for request to "${url}":`, data);
 
-                        const result = JSON.parse(data);
+                        let result: any;
+                        if (parseResponse) {
+                            result = JSON.parse(data);
+                        } else {
+                            result = data;
+                        }
+
                         resolve(result);
                     } catch (e) {
                         this.log?.error(`Error parsing response from request to "${url}":`, data);
