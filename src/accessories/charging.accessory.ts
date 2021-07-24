@@ -80,7 +80,6 @@ export class ChargingAccessory extends AbstractAccessory {
         const service = GoEChargerLocal.getService(this.instanceId);
         const state = await service
             .updateValue(
-                service.hostname,
                 'ast',
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? AccessStateEnum.open : AccessStateEnum.rfidOrAppNeeded
             );

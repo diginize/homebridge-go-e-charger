@@ -21,11 +21,14 @@ A homebridge integration for the go-eCharger wallbox.
 
 - go-eCharger installed and connected to the same network
 - activated HTTP API v1 (App / Internet / Erweiterte Einstellungen / Aktiviere lokale HTTP API v1)
+- activated HTTP API v2 (App / Internet / Erweiterte Einstellungen / Aktiviere lokale HTTP API v2)
 
 ## Configuration
 
 You can use this plugin to add multiple go-eChargers to HomeKit. Therefore, multiple platform configurations are needed.
 If you are using [homebridge-config-ui-x](https://github.com/oznu/homebridge-config-ui-x) you can simply use the ui to configure the plugin.
+
+> :warning: Adding more than one charger is not fully tested. Please provide feedback if issues with multiple chargers occur. 
 
 Basically each platform configuration consists of three configuration values:
 

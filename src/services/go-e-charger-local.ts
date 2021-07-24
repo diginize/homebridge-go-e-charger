@@ -35,7 +35,7 @@ export class GoEChargerLocal {
         this._lastUpdate = Date.now();
     }
 
-    async getStatus(hostname: string = this.hostname, cacheTtlMs: number = 2500): Promise<Status> {
+    async getStatus(cacheTtlMs: number = 2500, hostname: string = this.hostname): Promise<Status> {
         // prevent multiple simultaneous api calls
         if (this._currentRequest) {
             return await this._currentRequest;
@@ -57,24 +57,30 @@ export class GoEChargerLocal {
         return this._status as Status;
     }
 
-    async updateValue<T extends StatusWritable, K extends keyof T>(hostname: string = this.hostname, payloadKey?: K, payloadValue?: T[K]): Promise<Status> {
-        const status = await this.performRequest(hostname, '/mqtt', payloadKey, payloadValue);
+    async updateValue<T extends StatusWritable, K extends keyof T>(payloadKey?: K, payloadValue?: T[K], hostname: string = this.hostname): Promise<Status> {
+        const status = await this.performRequest(hostname, '/mqtt?payload=' + this.transformGetParameter(payloadKey as any, payloadValue as any));
         this.setStatus(status);
 
         return status;
+    }
+
+    async updateValueV2<T extends StatusWritable, K extends keyof T>(payloadKey?: K, payloadValue?: T[K], hostname: string = this.hostname): Promise<Status> {
+        await this.performRequest(hostname, '/api/set?' + this.transformGetParameter(payloadKey as string, JSON.stringify(payloadValue)), false);
+
+        return await this.getStatus(0);
     }
 
     protected getBaseUrl(hostname: string, path?: string): string {
         return `${this.protocol}://${hostname}${this.basePath}${path || ''}`;
     }
 
-    protected performRequest<R = Status, I = StatusWritable, K extends keyof I = never>(hostname: string, path?: string, payloadKey?: K, payloadValue?: I[K]): Promise<R> {
+    protected transformGetParameter(key: string, value: string): string {
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+    }
+
+    protected performRequest<R = Status, I = StatusWritable, K extends keyof I = never>(hostname: string, path?: string, parseResponse: boolean = true): Promise<R> {
         return new Promise<R>((resolve, reject) => {
             let url = this.getBaseUrl(hostname, path);
-
-            if (payloadKey !== undefined && payloadValue !== undefined) {
-                url += `?payload=${encodeURIComponent(payloadKey as string)}=${encodeURIComponent(payloadValue as any)}`;
-            }
 
             this.log?.debug('Performing request to:', url);
 
@@ -89,7 +95,13 @@ export class GoEChargerLocal {
                     try {
                         this.log?.debug(`Received response for request to "${url}":`, data);
 
-                        const result = JSON.parse(data);
+                        let result: any;
+                        if (parseResponse) {
+                            result = JSON.parse(data);
+                        } else {
+                            result = data;
+                        }
+
                         resolve(result);
                     } catch (e) {
                         this.log?.error(`Error parsing response from request to "${url}":`, data);

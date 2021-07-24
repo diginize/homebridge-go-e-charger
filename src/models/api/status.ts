@@ -238,7 +238,7 @@ export interface Status {
      */
     cfi: number;
 
-    lse: LedSaveEnergyEnum | number;
+    lse: LedSaveEnergyEnum | number | boolean;
 
     ust: UnlockStateEnum | number;
 
@@ -562,7 +562,7 @@ export interface Status {
 
 export type StatusWritable = Writable<Status> & {
     /**
-     * Setter for lse
+     * Setter for lse in v1 api
      */
     r2x: LedSaveEnergyEnum | number;
 };

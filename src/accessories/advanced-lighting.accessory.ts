@@ -96,7 +96,6 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
         const service = GoEChargerLocal.getService(this.instanceId);
         const state = await service
             .updateValue(
-                service.hostname,
                 'lbr',
                 Math.round((value as number) / 100 * 255)
             );
@@ -108,10 +107,9 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
     async setLedSaveEnergy(value: CharacteristicValue) {
         const service = GoEChargerLocal.getService(this.instanceId);
         const state = await service
-            .updateValue(
-                service.hostname,
-                'r2x',
-                value ? LedSaveEnergyEnum.activated : LedSaveEnergyEnum.deactivated
+            .updateValueV2(
+                'lse',
+                value as boolean
             );
         this._switchLedSaveEnergyStatus = state.lse == LedSaveEnergyEnum.activated;
 

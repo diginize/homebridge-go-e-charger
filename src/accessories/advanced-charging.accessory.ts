@@ -80,7 +80,6 @@ export class AdvancedChargingAccessory extends AbstractAccessory {
         const service = GoEChargerLocal.getService(this.instanceId);
         const state = await service
             .updateValue(
-                service.hostname,
                 'ust',
                 value === this.platform.Characteristic.LockTargetState.UNSECURED ? UnlockStateEnum.lockWhileCarPluggedIn : UnlockStateEnum.alwaysLocked
             );
