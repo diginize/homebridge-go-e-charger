@@ -21,6 +21,7 @@ A homebridge integration for the go-eCharger wallbox.
 
 - go-eCharger installed and connected to the same network
 - activated HTTP API v1 (App / Internet / Erweiterte Einstellungen / Aktiviere lokale HTTP API v1)
+- activated HTTP API v2 (App / Internet / Erweiterte Einstellungen / Aktiviere lokale HTTP API v2)
 
 ## Configuration
 

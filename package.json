@@ -1,7 +1,7 @@
 {
   "displayName": "Homebridge go-eCharger",
   "name": "homebridge-go-e-charger",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A homebridge integration for the go-e charger wallbox.",
   "license": "AGPL-3.0-or-later",
   "repository": {
