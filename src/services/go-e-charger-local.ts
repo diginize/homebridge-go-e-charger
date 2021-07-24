@@ -64,6 +64,12 @@ export class GoEChargerLocal {
         return status;
     }
 
+    async updateValueV2<T extends StatusWritable, K extends keyof T>(payloadKey?: K, payloadValue?: T[K], hostname: string = this.hostname): Promise<StatusV1> {
+        await this.performRequest(hostname, '/status/set?' + this.transformGetParameter(payloadKey as string, JSON.stringify(payloadValue)), false);
+
+        return await this.getStatus(0);
+    }
+
     protected getBaseUrl(hostname: string, path?: string): string {
         return `${this.protocol}://${hostname}${this.basePath}${path || ''}`;
     }
