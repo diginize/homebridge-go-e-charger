@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as https from "https";
-import {StatusV1, StatusWritable} from "../models/api/status-v1";
+import {Status, StatusWritable} from "../models/api/status";
 import {Logger} from "homebridge";
 
 export class GoEChargerLocal {
@@ -26,16 +26,16 @@ export class GoEChargerLocal {
 
     public log?: Logger;
 
-    private _status?: StatusV1;
-    private _currentRequest?: Promise<StatusV1>;
+    private _status?: Status;
+    private _currentRequest?: Promise<Status>;
     private _lastUpdate?: number;
 
-    private setStatus(status: StatusV1): void {
+    private setStatus(status: Status): void {
         this._status = status;
         this._lastUpdate = Date.now();
     }
 
-    async getStatus(cacheTtlMs: number = 2500, hostname: string = this.hostname): Promise<StatusV1> {
+    async getStatus(cacheTtlMs: number = 2500, hostname: string = this.hostname): Promise<Status> {
         // prevent multiple simultaneous api calls
         if (this._currentRequest) {
             return await this._currentRequest;
@@ -43,28 +43,28 @@ export class GoEChargerLocal {
 
         // try to use cached result
         if (!this._lastUpdate || this._lastUpdate + cacheTtlMs <= Date.now()) {
-            this._currentRequest = new Promise<StatusV1>(async (resolve) => {
+            this._currentRequest = new Promise<Status>(async (resolve) => {
                 const status = await this.performRequest(hostname, '/status');
                 this.setStatus(status);
 
-                resolve(this._status as StatusV1);
+                resolve(this._status as Status);
             });
 
             await this._currentRequest;
             this._currentRequest = undefined;
         }
 
-        return this._status as StatusV1;
+        return this._status as Status;
     }
 
-    async updateValue<T extends StatusWritable, K extends keyof T>(payloadKey?: K, payloadValue?: T[K], hostname: string = this.hostname): Promise<StatusV1> {
+    async updateValue<T extends StatusWritable, K extends keyof T>(payloadKey?: K, payloadValue?: T[K], hostname: string = this.hostname): Promise<Status> {
         const status = await this.performRequest(hostname, '/mqtt?payload=' + this.transformGetParameter(payloadKey as any, payloadValue as any));
         this.setStatus(status);
 
         return status;
     }
 
-    async updateValueV2<T extends StatusWritable, K extends keyof T>(payloadKey?: K, payloadValue?: T[K], hostname: string = this.hostname): Promise<StatusV1> {
+    async updateValueV2<T extends StatusWritable, K extends keyof T>(payloadKey?: K, payloadValue?: T[K], hostname: string = this.hostname): Promise<Status> {
         await this.performRequest(hostname, '/api/set?' + this.transformGetParameter(payloadKey as string, JSON.stringify(payloadValue)), false);
 
         return await this.getStatus(0);
@@ -78,7 +78,7 @@ export class GoEChargerLocal {
         return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
     }
 
-    protected performRequest<R = StatusV1, I = StatusWritable, K extends keyof I = never>(hostname: string, path?: string, parseResponse: boolean = true): Promise<R> {
+    protected performRequest<R = Status, I = StatusWritable, K extends keyof I = never>(hostname: string, path?: string, parseResponse: boolean = true): Promise<R> {
         return new Promise<R>((resolve, reject) => {
             let url = this.getBaseUrl(hostname, path);
 

@@ -18,7 +18,7 @@ import {CloudEnabledStatusEnum} from "./cloud-enabled-status.enum";
 import {MqttStateEnum} from "./mqtt-state.enum";
 import {Writable} from "../../helpers/conditional-types";
 
-export interface StatusV1 {
+export interface Status {
 
     readonly version: VersionEnum | number;
 
@@ -238,7 +238,7 @@ export interface StatusV1 {
      */
     cfi: number;
 
-    lse: LedSaveEnergyEnum | number;
+    lse: LedSaveEnergyEnum | number | boolean;
 
     ust: UnlockStateEnum | number;
 
@@ -560,9 +560,9 @@ export interface StatusV1 {
 
 }
 
-export type StatusWritable = Writable<StatusV1> & {
+export type StatusWritable = Writable<Status> & {
     /**
-     * Setter for lse
+     * Setter for lse in v1 api
      */
     r2x: LedSaveEnergyEnum | number;
 };

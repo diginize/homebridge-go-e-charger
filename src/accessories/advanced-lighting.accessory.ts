@@ -109,7 +109,7 @@ export class AdvancedLightingAccessory extends AbstractAccessory {
         const state = await service
             .updateValueV2(
                 'lse',
-                !!value as any
+                value as boolean
             );
         this._switchLedSaveEnergyStatus = state.lse == LedSaveEnergyEnum.activated;
 
